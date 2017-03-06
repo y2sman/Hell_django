@@ -1,0 +1,153 @@
+{% load staticfiles %}
+{% csrf_token %}
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="format-detection" content="telephone=no,address=no,email=no" />
+		<meta name="author" content="y2sman" />
+		<title>HELLCAMP</title>
+		<link rel="stylesheet" href="{% static 'css/main.css' %}">
+	</head>
+
+	<body>
+		{% include 'base/header.html' %}
+		<div class="main-header-img">
+			<div class="sub-header-img">
+				<p>Anounce</p>
+			</div>
+		</div>
+
+		<section class="anounce-list">
+			<div class="list">
+				<div id="list">
+				</div>
+				<div>
+					<input class="button" type="button" id="button_new" value="NEWWWWWWWWWWWWWWW">
+				</div>
+			</div>
+		</section>
+		{% include 'base/footer.html' %}
+	</body>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+	<script type="text/javascript">
+		get_list();
+		function get_list()
+		{
+			
+		var seq = 0;
+		var num = 1;
+
+		$.ajax(
+		{
+			type: "POST",
+			url: "/anounce/get_list",
+			data: "data",
+			dataType: "json",
+			processData: false,
+			contentType: false,
+			
+				success: function(data)
+				{
+					var result = data.result;
+					$("#list").html("");
+					if(result[9]['id']==1)
+					{	
+						result[9]['author'] = "admin";
+					}
+				
+					$("#list").append("<div class='get_list' id="+result[9]['id']+"><p>제목 : "+result[9]['title']+"</p><p>작성자 : "+result[9]['author']+"</p><p>날짜 : "+result[9]['published']+"</p></div>");
+					}
+				}
+				);
+
+		
+			$("#button_new").click(function(){
+			
+				$.ajax(
+				{
+					type: "POST",
+					url: "/anounce/get_list",
+					data: "data",
+					dataType: "json",
+					processData: false,
+					contentType: false,
+					
+					success: function(data)
+					{
+				
+						var result = data.result;
+				
+						for(seq=9; seq>=0; seq--)
+						{
+							if(result[seq]['id']==1)
+							{	
+									result[seq]['author'] = "admin";
+							}
+						}
+				
+						if(num==10)
+						{
+
+						alert("글이 더 없습니다.");
+
+						$("#list").html("");
+							for(seq=9; seq>=0; seq--)
+							{
+								if(result[seq]['author']==null)
+								{	
+									result[seq]['author'] = "admin";
+								}
+				
+								$("#list").append("<div class='get_list' id="+result[seq]['id']+"><p>제목 : "+result[seq]['title']+"</p><p>작성자 : "+result[seq]['author']+"</p><p>날짜 : "+result[seq]['published']+"</p></div>");
+							}
+						}
+						else
+						{
+
+						$("#list").html("");
+							for(seq=9; seq>=9-num; seq--)
+							{
+								if(result[seq]['author']==null)
+								{	
+									result[seq]['author'] = "admin";
+								}
+						
+								$("#list").append("<div class='get_list' id="+result[seq]['id']+"><p>제목 : "+result[seq]['title']+"</p><p>작성자 : "+result[seq]['author']+"</p><p>날짜 : "+result[seq]['published']+"</p></div>");
+							}	
+							num=num+1;
+						}
+					}
+				});
+			});
+		}
+
+		$(document).on("click",".get_list",function()
+		{	
+		var id = $(this).attr("id");
+		
+		$.ajax(
+		{
+			type: "POST",
+			url: "/anounce/detail_list/"+id,
+			data: "data",
+			dataType: "json",
+			processData: false,
+			contentType: false,
+			
+			success: function(data)
+			{
+				var result = data.result;
+				
+				if(result[0]['author']==null)
+				{
+					result[0]['author'] = "admin";
+				}
+				
+				alert("제목 : "+result[0]['title']+"\n"+"작성자 : "+result[0]['author']+"\n"+"작성일 : "+result[0]['published']+"\n"+"내용 : "+result[0]['context']);
+			}
+		});
+		});
+	</script>
+
+</html>
