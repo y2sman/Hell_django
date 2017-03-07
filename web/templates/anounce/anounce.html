@@ -24,6 +24,8 @@
 				<div>
 					<input class="button" type="button" id="button_new" value="NEWWWWWWWWWWWWWWW">
 				</div>
+				<p id="demo">
+				</p>
 			</div>
 		</section>
 		{% include 'base/footer.html' %}
@@ -144,7 +146,7 @@
 					result[0]['author'] = "admin";
 				}
 				
-				alert("제목 : "+result[0]['title']+"\n"+"작성자 : "+result[0]['author']+"\n"+"작성일 : "+result[0]['published']+"\n"+"내용 : "+result[0]['context']);
+				$("#demo").html("<div class='get_list' id="+result[0]['id']+"><p>-클릭한 게시글 내용-</p><p>제목 : "+result[0]['title']+"</p><p>작성자 : "+result[0]['author']+"</p><p>날짜 : "+result[0]['published']+"</p><p>내용 : "+result[0]['context']+"</p></div>");
 			}
 		});
 		});
